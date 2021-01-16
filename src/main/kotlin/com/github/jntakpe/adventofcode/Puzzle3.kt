@@ -10,10 +10,10 @@ fun main() {
         .run { print(this) }
 }
 
-object Puzzle3 {
+private object Puzzle3 {
     data class Rule(val minOccurrence: Int, val maxOccurrence: Int, val character: Char)
 
-    data class Line(val password: String, val rule: Rule) {
+    class Line(private val password: String, private val rule: Rule) {
 
         fun isValid() = password.count { it == rule.character }.run { this >= rule.minOccurrence && this <= rule.maxOccurrence }
     }

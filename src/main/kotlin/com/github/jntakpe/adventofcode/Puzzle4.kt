@@ -10,10 +10,10 @@ fun main() {
         .run { print(this) }
 }
 
-object Puzzle4 {
+private object Puzzle4 {
     data class Position(val first: Int, val last: Int, val character: Char)
 
-    data class Line(val password: String, val position: Position) {
+    class Line(private val password: String, private val position: Position) {
 
         fun isValid() = hasChar(position.first) xor hasChar(position.last)
 
