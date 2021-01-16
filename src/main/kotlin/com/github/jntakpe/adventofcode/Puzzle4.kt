@@ -1,7 +1,7 @@
 package com.github.jntakpe.adventofcode
 
-import com.github.jntakpe.adventofcode.Puzzle3.Line
-import com.github.jntakpe.adventofcode.Puzzle3.Rule
+import com.github.jntakpe.adventofcode.Puzzle4.Line
+import com.github.jntakpe.adventofcode.Puzzle4.Position
 
 fun main() {
     readInputLines(3)
@@ -11,21 +11,24 @@ fun main() {
 }
 
 object Puzzle4 {
-    data class Rule(val minOccurrence: Int, val maxOccurrence: Int, val character: Char)
+    data class Position(val first: Int, val last: Int, val character: Char)
 
-    data class Line(val password: String, val rule: Rule) {
+    data class Line(val password: String, val position: Position) {
 
-        fun isValid() = password.count { it == rule.character }.run { this >= rule.minOccurrence && this <= rule.maxOccurrence }
+        fun isValid() = hasChar(position.first) xor hasChar(position.last)
+
+        private fun hasChar(index: Int) = with(index - 1) { password.length > this && password[this] == position.character }
     }
 }
 
 private fun String.parseLine() = split(':').let { l -> l.first().parseRule()?.let { r -> l.last().parsePassword()?.let { Line(it, r) } } }
 
-private fun String?.parseRule(): Rule? {
+private fun String?.parseRule(): Position? {
     return takeIf { !isNullOrBlank() }
         ?.split(Regex("[^\\w']+"))
         ?.map { it.trim() }
-        ?.let { Rule(it.first().toInt(), it[1].toInt(), it.last().first()) }
+        ?.let { Position(it.first().toInt(), it[1].toInt(), it.last().first()) }
 }
 
 private fun String?.parsePassword() = takeIf { !isNullOrBlank() }?.trim()
+
