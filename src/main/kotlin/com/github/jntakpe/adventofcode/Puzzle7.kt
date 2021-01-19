@@ -11,16 +11,17 @@ fun main() {
         .run { println(this) }
 }
 
-private fun String.parsePassport() = split("[\\n\\r\\s]+".toRegex()).map { it.trim().split(":") }.map { it.first().parseKey() to it.last() }
+private fun String.parsePassport(): Map<PassportFields, String> {
+    return split("[\\n\\r\\s]+".toRegex())
+        .map { it.trim().split(":") }
+        .associate { it.first().parseKey() to it.last() }
+}
 
 private fun String.parseKey() = PassportFields.values().find { it.text == this }!!
 
-private fun List<Pair<PassportFields, String>>.isValid(): Boolean {
-    return map { it.first }
-        .containsAll(PassportFields.values().filter { it != PassportFields.COUNTRY_ID })
-}
+private fun Map<PassportFields, String>.isValid() = keys.containsAll(PassportFields.values().filter { it != PassportFields.COUNTRY_ID })
 
-object Puzzle7 {
+private object Puzzle7 {
 
     enum class PassportFields(val text: String) {
         BIRTH_YEAR("byr"),
