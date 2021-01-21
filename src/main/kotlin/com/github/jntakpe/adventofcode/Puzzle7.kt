@@ -3,9 +3,7 @@ package com.github.jntakpe.adventofcode
 import com.github.jntakpe.adventofcode.Puzzle7.PassportFields
 
 fun main() {
-    readInput(7)
-        .split("\\n\\r".toRegex())
-        .map { it.trim() }
+    readInputSplitOnBlank(7)
         .map { it.parsePassport() }
         .count { it.isValid() }
         .run { println(this) }
