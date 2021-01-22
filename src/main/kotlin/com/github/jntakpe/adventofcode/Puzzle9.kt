@@ -9,7 +9,7 @@ fun main() {
         .run { println(this) }
 }
 
-object Puzzle9 {
+private object Puzzle9 {
     enum class Direction(private val char: Char) {
         FRONT('F'),
         BACK('B'),
