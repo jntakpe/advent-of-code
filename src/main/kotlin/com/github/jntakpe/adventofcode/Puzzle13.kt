@@ -24,7 +24,7 @@ private fun containsRecursively(bags: Set<Bag>, bagName: String): Set<Bag> {
     return bags.filter { it.content.containsKey(bagName) }.toSet()
 }
 
-object Puzzle13 {
+private object Puzzle13 {
     class Bag(line: String) {
 
         val name: String = line.substringBefore("bags").trim()
