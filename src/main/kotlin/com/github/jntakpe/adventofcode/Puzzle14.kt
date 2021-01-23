@@ -5,30 +5,39 @@ import com.github.jntakpe.adventofcode.Puzzle14.Bag
 fun main() {
     readInputLines(13)
         .map { Bag(it) }
-        .toSet()
-        .contains("shiny gold")
-        .run { println(size) }
+        .run { find { it.name == "shiny gold" }!!.capacity2(toSet()) }
+        .run { print(this) }
 }
 
-private fun Set<Bag>.contains(name: String): Set<Bag> {
-    val bags = containsRecursively(this, name).toMutableSet()
-    do {
-        val filtered = bags
-            .flatMap { containsRecursively(this, it.name) }
-            .toSet()
-    } while (bags.addAll(filtered))
-    return bags
+private fun Bag.capacity2(bags: Set<Bag>): Int {
+    return subBags(bags)
+        .map { it.capacity(bags) }
+        .sum()
 }
 
-private fun containsRecursively(bags: Set<Bag>, bagName: String): Set<Bag> {
-    return bags.filter { it.content.containsKey(bagName) }.toSet()
+private fun Bag.capacity(bags: Set<Bag>): Int {
+    var flattenBags = subBags(bags)
+    var count = 1
+    while (flattenBags.any { it.content.isNotEmpty() }) {
+        flattenBags = flattenBags
+            .filter { it.content.isNotEmpty() }
+            .onEach { count++ }
+            .flatMap { it.subBags(bags) }
+            .let { b -> b + flattenBags.filter { it.content.isEmpty() } }
+    }
+    return flattenBags.size + count
 }
 
-object Puzzle14 {
+private fun Bag.subBags(bags: Set<Bag>) = content.flatMap { e -> bags.byName(e.key).let { b -> (0 until e.value).map { b } } }
+
+private fun Iterable<Bag>.byName(name: String) = find { it.name == name } ?: throw IllegalStateException("Bag $name does not exists")
+
+private object Puzzle14 {
+
     class Bag(line: String) {
 
         val name: String = line.substringBefore("bags").trim()
-        val content: Map<String, Int> = resolveContent(line)
+        var content: Map<String, Int> = resolveContent(line)
 
         private fun resolveContent(line: String): Map<String, Int> {
             return line
