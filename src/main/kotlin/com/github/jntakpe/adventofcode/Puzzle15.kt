@@ -1,15 +1,12 @@
 package com.github.jntakpe.adventofcode
 
+import com.github.jntakpe.adventofcode.Puzzle15.Program
+
 fun main() {
     readInputLines(15)
         .map { it.toLine() }
-        .run { Puzzle15.Program(this) }
-        .run {
-            while (hasNext() && firstTime()) {
-                next()
-            }
-            println(accumulator)
-        }
+        .run { Program(this).run() }
+        .run { println(this) }
 }
 
 private object Puzzle15 {
@@ -22,13 +19,20 @@ private object Puzzle15 {
 
     class Program(private val lines: List<Line>): Iterator<Line> {
 
+        private var accumulator = 0
         private var index = 0
         private var indexesExecuted = mutableListOf<Int>()
-        var accumulator: Int = 0
 
-        fun firstTime() = !indexesExecuted.contains(index)
+        fun run(): Int {
+            while (hasNext() && firstTime()) {
+                next()
+            }
+            return accumulator
+        }
 
-        override fun hasNext() = index < lines.size - 1
+        private fun firstTime() = !indexesExecuted.contains(index)
+
+        override fun hasNext() = index < lines.size
 
         override fun next(): Line {
             val currentLine = lines[index]
