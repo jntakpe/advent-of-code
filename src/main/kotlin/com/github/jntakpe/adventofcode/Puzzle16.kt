@@ -28,7 +28,6 @@ private object Puzzle16 {
         fun run() {
             fix()
             reset()
-            println(lines)
             walkList()
             println(accumulator)
         }
@@ -89,7 +88,7 @@ private object Puzzle16 {
                 }
                 Instruction.JMP -> {
                     index += currentLine.value
-                    lines[index]
+                    if (index < lines.size) lines[index] else lines[lines.size - 1]
                 }
                 Instruction.NOP -> lines[index++]
             }
